@@ -52,6 +52,20 @@
             margin-bottom: 5px;
         }
 
+        .header-image {
+            margin-top: 15px;
+            border: 1px solid #00ff00;
+            padding: 10px;
+            background-color: #0a0e27;
+            display: inline-block;
+        }
+
+        .header-image img {
+            max-width: 200px;
+            height: auto;
+            filter: brightness(1.2) contrast(1.1);
+        }
+
         .timestamp {
             font-size: 12px;
             color: #008800;
@@ -146,6 +160,20 @@
             text-shadow: 0 0 10px #00ffff;
         }
 
+        .character-image {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #00ff00;
+            background-color: #0a0e27;
+            text-align: center;
+        }
+
+        .character-image img {
+            max-width: 300px;
+            height: auto;
+            filter: brightness(1.2) contrast(1.1);
+        }
+
         .tabs {
             display: flex;
             gap: 10px;
@@ -233,6 +261,14 @@
             .character-large {
                 font-size: 36px;
             }
+
+            .header-image img {
+                max-width: 150px;
+            }
+
+            .character-image img {
+                max-width: 200px;
+            }
         }
     </style>
 </head>
@@ -242,12 +278,15 @@
             <div class="title">크체 문자 자전</div>
             <div class="subtitle">[KUCHE-CHARACTER SA-JEON]</div>
             <div class="subtitle">크체 문자 자전</div>
+            <div class="header-image">
+                <img src="https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png" alt="크체 문자">
+            </div>
             <div class="timestamp" id="timestamp"></div>
         </div>
 
         <div class="search-box">
             <label class="search-label">>>> 검색</label>
-            <input type="text" id="searchInput" placeholder="한자를 입력하세요. 예: 天, 世" autocomplete="off">
+            <input type="text" id="searchInput" placeholder="크체 문자를 입력하세요. 예: 天, 世" autocomplete="off">
             <div class="search-buttons">
                 <button onclick="search()">[ 검색 ]</button>
                 <button onclick="clearSearch()">[ 초기화 ]</button>
@@ -258,23 +297,102 @@
     </div>
 
     <script>
-        // 한자 데이터베이스
+        // 크체 문자 데이터베이스
         const dictionary = [
             {
-                character: 'get_preview_glyph (1).png 파일 불러오기',
+                character: '天',
+                image: 'https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png',
                 meaning: '세상(世)의 위(上)에 있는 하늘',
                 meaningBold: '세상(世)의 위(上)에 있는 하늘',
                 readings: { korean: 'cheon', chinese: 'tiān', japanese: 'ten' },
-                origin: '⿱上世.',
+                origin: '위를 향하는 사람의 형상에서 비롯됨. 천(天)은 인��이 도달할 수 없는 위대한 존재를 의미하며, 중국 고대에는 하늘을 통치자의 권위의 원천으로 봄.',
                 radicals: '大 (큼)',
                 strokes: 4,
                 aliases: ['하늘', '천국', '자연']
             },
             {
+                character: '世',
+                image: 'https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png',
+                meaning: '세상, 시대, 대대로',
+                readings: { korean: 'se', chinese: 'shì', japanese: 'yo' },
+                origin: '30년을 한 세대로 보는 관념에서 비롯됨. 人(사람)이 여러 세대를 거쳐 세상을 이루는 것을 나타냄.',
+                radicals: '世 (세상)',
+                strokes: 5,
+                aliases: ['시대', '대대로', '현세']
+            },
+            {
+                character: '上',
+                image: 'https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png',
+                meaning: '위, 올라감, 우수한',
+                readings: { korean: 'sang', chinese: 'shàng', japanese: 'kami' },
+                origin: '높이 올라간 손의 형상과 점(•)으로 위치를 나타냄. 위쪽 방향과 우수함을 의미.',
+                radicals: '上 (위)',
+                strokes: 3,
+                aliases: ['위쪽', '높이', '최고']
+            },
+            {
+                character: '下',
+                image: 'https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png',
+                meaning: '아래, 내려감, 낮춤',
+                readings: { korean: 'ha', chinese: 'xià', japanese: 'shita' },
+                origin: '아래로 내려간 손의 형상. 위(上)의 반대 개념.',
+                radicals: '下 (아래)',
+                strokes: 3,
+                aliases: ['아래', '내려옴', '저급']
+            },
+            {
+                character: '水',
+                image: 'https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png',
+                meaning: '물, 수액, 액체',
+                readings: { korean: 'su', chinese: 'shuǐ', japanese: 'mizu' },
+                origin: '흐르는 물의 형상을 나타냄. 세로 흐르는 줄과 가지를 친 물의 모습을 상형.',
+                radicals: '水 (물)',
+                strokes: 4,
+                aliases: ['물', '수분', '유동성']
+            },
+            {
+                character: '火',
+                image: 'https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png',
+                meaning: '불, 화염, 뜨거움',
+                readings: { korean: 'hwa', chinese: 'huǒ', japanese: 'hi' },
+                origin: '활활 타오르는 불의 형상. 중앙에 불씨가 있고 양옆으로 불꽃이 타오르는 모습.',
+                radicals: '火 (불)',
+                strokes: 4,
+                aliases: ['불꽃', '열', '에너지']
+            },
+            {
+                character: '木',
+                image: 'https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png',
+                meaning: '나무, 식물, 자연',
+                readings: { korean: 'mok', chinese: 'mù', japanese: 'ki' },
+                origin: '나무의 줄기와 가지를 상형한 글자. 뿌리에서 나온 줄기와 가지를 모두 나타냄.',
+                radicals: '木 (나무)',
+                strokes: 4,
+                aliases: ['식물', '숲', '자연']
+            },
+            {
+                character: '金',
+                image: 'https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png',
+                meaning: '금, 금속, 귀한 것',
+                readings: { korean: 'geum', chinese: 'jīn', japanese: 'kin' },
+                origin: '땅 위에 반짝거리는 금속의 형상. 흙(土) 위에 보석이 있는 모습을 나타냄.',
+                radicals: '金 (금)',
+                strokes: 8,
+                aliases: ['황금', '금속', '부']
+            },
+            {
+                character: '土',
+                image: 'https://raw.githubusercontent.com/Shiroko4592/dict/main/get_preview_glyph%20(1).png',
+                meaning: '흙, 땅, 지면',
+                readings: { korean: 'to', chinese: 'tǔ', japanese: 'tsuchi' },
+                origin: '땅의 표면을 나타냄. 가로 선과 세로 선이 교차하여 흙의 입자를 표현.',
+                radicals: '土 (흙)',
+                strokes: 3,
+                aliases: ['지면', '땅', '흙']
             }
         ];
 
-        // 초기 시간 ���시
+        // 초기 시간 업데이트
         function updateTimestamp() {
             const now = new Date();
             const year = now.getFullYear();
@@ -315,7 +433,7 @@
             
             if (results.length === 0) {
                 resultsDiv.innerHTML = 
-                    `<div class="no-result">[NO MATCH] '${query}'에 해당하는 한자를 찾을 수 없습니다.</div>`;
+                    `<div class="no-result">[NO MATCH] '${query}'에 해당하는 문자를 찾을 수 없습니다.</div>`;
                 return;
             }
 
@@ -323,11 +441,15 @@
                 results.map((item, index) => createCharacterHTML(item, index)).join('');
         }
 
-        // 한자 아이템 HTML 생성
+        // 크체 문자 아이템 HTML 생성
         function createCharacterHTML(item, index) {
             return `
                 <div class="character-item" onclick="toggleTabs(${index})">
                     <div class="character-large">${item.character}</div>
+                    
+                    <div class="character-image">
+                        <img src="${item.image}" alt="${item.character}">
+                    </div>
                     
                     <div class="radicals">한글음: <strong>${item.readings.korean}</strong> | 한음: <strong>${item.readings.chinese}</strong> | 일본음: <strong>${item.readings.japanese}</strong></div>
                     <div class="radicals">부수: ${item.radicals} | 획수: ${item.strokes}</div>
