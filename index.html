@@ -1,2 +1,475 @@
-## 2000년대 딥웹 스타일
-## get_preview_glyph (1).png 이미지 불러오고 의미 탭에 '세상(世)의 위(上)에 있는 하늘' 이라고 굵은 글씨로 적고 제자원리 서술.
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>漢字 辭典 - 한자 자전</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0e27;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            border: 3px solid #00ff00;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 2px dashed #00ff00;
+            padding: 20px;
+            background-color: #0f1429;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 15px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff00;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #00cc00;
+            margin-bottom: 5px;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #008800;
+            margin-top: 10px;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+            border: 2px solid #00ff00;
+            padding: 15px;
+            background-color: #0a0e27;
+        }
+
+        .search-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #00ff00;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #0a0e27;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"]::placeholder {
+            color: #006600;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            border-color: #00ffff;
+        }
+
+        .search-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            background-color: #0a0e27;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background-color: #001a00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        button:active {
+            background-color: #003300;
+        }
+
+        .results {
+            margin-top: 20px;
+            min-height: 50px;
+        }
+
+        .character-item {
+            border: 1px solid #00ff00;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #0a0e27;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .character-item:hover {
+            background-color: #001a00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+        }
+
+        .character-large {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #00ff00;
+        }
+
+        .tab-button {
+            padding: 8px 15px;
+            background-color: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            font-size: 12px;
+            flex: 0 0 auto;
+        }
+
+        .tab-button.active {
+            background-color: #001a00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 15px;
+            border-top: 1px dashed #00ff00;
+            background-color: #0f1429;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .meaning-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #00ffff;
+        }
+
+        .meaning-text {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .origin-title {
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #00cc00;
+        }
+
+        .origin-text {
+            margin-bottom: 10px;
+        }
+
+        .no-result {
+            text-align: center;
+            color: #ff0000;
+            padding: 20px;
+            border: 1px dashed #ff0000;
+        }
+
+        .divider {
+            border-top: 1px dashed #00ff00;
+            margin: 10px 0;
+        }
+
+        .radicals {
+            font-size: 12px;
+            color: #00cc00;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+            
+            .character-large {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">漢字 辭典</div>
+            <div class="subtitle">[HAN-JA SA-JEON]</div>
+            <div class="subtitle">한자 자전</div>
+            <div class="timestamp" id="timestamp"></div>
+        </div>
+
+        <div class="search-box">
+            <label class="search-label">>>> 검색 (한자 또는 뜻)</label>
+            <input type="text" id="searchInput" placeholder="한자를 입력하세요. 예: 天, 世" autocomplete="off">
+            <div class="search-buttons">
+                <button onclick="search()">[ 검색 ]</button>
+                <button onclick="clearSearch()">[ 초기화 ]</button>
+            </div>
+        </div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        // 한자 데이터베이스
+        const dictionary = [
+            {
+                character: '天',
+                meaning: '세상(世)의 위(上)에 있는 하늘',
+                meaningBold: '세상(世)의 위(上)에 있는 하늘',
+                readings: { korean: 'cheon', chinese: 'tiān', japanese: 'ten' },
+                origin: '위를 향하는 사람의 형상에서 비롯됨. 천(天)은 인간이 도달할 수 없는 위대한 존재를 의미하며, 중국 고대에는 하늘을 통치자의 권위의 원천으로 봄.',
+                radicals: '大 (큼)',
+                strokes: 4,
+                aliases: ['하늘', '천국', '자연']
+            },
+            {
+                character: '世',
+                meaning: '세상, 시대, 대대로',
+                readings: { korean: 'se', chinese: 'shì', japanese: 'yo' },
+                origin: '30년을 한 세대로 보는 관념에서 비롯됨. 人(사람)이 여러 세대를 거쳐 세상을 이루는 것을 나타냄.',
+                radicals: '世 (세상)',
+                strokes: 5,
+                aliases: ['시대', '대대로', '현세']
+            },
+            {
+                character: '上',
+                meaning: '위, 올라감, 우수한',
+                readings: { korean: 'sang', chinese: 'shàng', japanese: 'kami' },
+                origin: '높이 올라간 손의 형상과 점(•)으로 위치를 나타냄. 위쪽 방향과 우수함을 의미.',
+                radicals: '上 (위)',
+                strokes: 3,
+                aliases: ['위쪽', '높이', '최고']
+            },
+            {
+                character: '下',
+                meaning: '아래, 내려감, 낮춤',
+                readings: { korean: 'ha', chinese: 'xià', japanese: 'shita' },
+                origin: '아래로 내려간 손의 형상. 위(上)의 반대 개념.',
+                radicals: '下 (아래)',
+                strokes: 3,
+                aliases: ['아래', '내려옴', '저급']
+            },
+            {
+                character: '水',
+                meaning: '물, 수액, 액체',
+                readings: { korean: 'su', chinese: 'shuǐ', japanese: 'mizu' },
+                origin: '흐르는 물의 형상을 나타냄. 세로 흐르는 줄과 가지를 친 물의 모습을 상형.',
+                radicals: '水 (물)',
+                strokes: 4,
+                aliases: ['물', '수분', '유동성']
+            },
+            {
+                character: '火',
+                meaning: '불, 화염, 뜨거움',
+                readings: { korean: 'hwa', chinese: 'huǒ', japanese: 'hi' },
+                origin: '활활 타오르는 불의 형상. 중앙에 불씨가 있고 양옆으로 불꽃이 타오르는 모습.',
+                radicals: '火 (불)',
+                strokes: 4,
+                aliases: ['불꽃', '열', '에너지']
+            },
+            {
+                character: '木',
+                meaning: '나무, 식물, 자연',
+                readings: { korean: 'mok', chinese: 'mù', japanese: 'ki' },
+                origin: '나무의 줄기와 가지를 상형한 글자. 뿌리에서 나온 줄기와 가지를 모두 나타냄.',
+                radicals: '木 (나무)',
+                strokes: 4,
+                aliases: ['식물', '숲', '자연']
+            },
+            {
+                character: '金',
+                meaning: '금, 금속, 귀한 것',
+                readings: { korean: 'geum', chinese: 'jīn', japanese: 'kin' },
+                origin: '땅 위에 반짝거리는 금속의 형상. 흙(土) 위에 보석이 있는 모습을 나타냄.',
+                radicals: '金 (금)',
+                strokes: 8,
+                aliases: ['황금', '금속', '부']
+            },
+            {
+                character: '土',
+                meaning: '흙, 땅, 지면',
+                readings: { korean: 'to', chinese: 'tǔ', japanese: 'tsuchi' },
+                origin: '땅의 표면을 나타냄. 가로 선과 세로 선이 교차하여 흙의 입자를 표현.',
+                radicals: '土 (흙)',
+                strokes: 3,
+                aliases: ['지면', '땅', '흙']
+            }
+        ];
+
+        // 초기 시간 ���시
+        function updateTimestamp() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const date = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            document.getElementById('timestamp').textContent = 
+                `[${year}/${month}/${date} ${hours}:${minutes}:${seconds}]`;
+        }
+
+        updateTimestamp();
+        setInterval(updateTimestamp, 1000);
+
+        // 검색 함수
+        function search() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                document.getElementById('results').innerHTML = 
+                    '<div class="no-result">[ERROR] 검색어를 입력해주세요.</div>';
+                return;
+            }
+
+            const results = dictionary.filter(item => 
+                item.character.includes(query) ||
+                item.meaning.includes(query) ||
+                item.aliases.some(alias => alias.includes(query))
+            );
+
+            displayResults(results, query);
+        }
+
+        // 검색 결과 표시
+        function displayResults(results, query) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (results.length === 0) {
+                resultsDiv.innerHTML = 
+                    `<div class="no-result">[NO MATCH] '${query}'에 해당하는 한자를 찾을 수 없습니다.</div>`;
+                return;
+            }
+
+            resultsDiv.innerHTML = `<div style="color: #00cc00; margin-bottom: 15px; font-weight: bold;">[${results.length}개의 결과를 찾았습니다]</div>` + 
+                results.map((item, index) => createCharacterHTML(item, index)).join('');
+        }
+
+        // 한자 아이템 HTML 생성
+        function createCharacterHTML(item, index) {
+            return `
+                <div class="character-item" onclick="toggleTabs(${index})">
+                    <div class="character-large">${item.character}</div>
+                    
+                    <div class="radicals">한글음: <strong>${item.readings.korean}</strong> | 한음: <strong>${item.readings.chinese}</strong> | 일본음: <strong>${item.readings.japanese}</strong></div>
+                    <div class="radicals">부수: ${item.radicals} | 획수: ${item.strokes}</div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="tabs">
+                        <button class="tab-button active" onclick="switchTab(event, 'meaning-${index}')">[ 의미 ]</button>
+                        <button class="tab-button" onclick="switchTab(event, 'origin-${index}')">[ 제자원리 ]</button>
+                    </div>
+                    
+                    <div id="meaning-${index}" class="tab-content active">
+                        <div class="meaning-title">>>> 의미</div>
+                        <div class="meaning-text">${item.meaningBold}</div>
+                        <div>별칭: ${item.aliases.join(', ')}</div>
+                    </div>
+                    
+                    <div id="origin-${index}" class="tab-content">
+                        <div class="origin-title">>>> 제자원리 (글자 만든 원리)</div>
+                        <div class="origin-text">${item.origin}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 탭 전환
+        function switchTab(event, tabId) {
+            event.stopPropagation();
+            
+            const tab = document.getElementById(tabId);
+            const tabContainer = tab.parentElement;
+            const allTabs = tabContainer.querySelectorAll('.tab-content');
+            const allButtons = tabContainer.querySelectorAll('.tab-button');
+            
+            allTabs.forEach(t => t.classList.remove('active'));
+            allButtons.forEach(b => b.classList.remove('active'));
+            
+            tab.classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 탭 열기/닫기 토글
+        function toggleTabs(index) {
+            const meaningTab = document.getElementById(`meaning-${index}`);
+            const originTab = document.getElementById(`origin-${index}`);
+            
+            if (meaningTab.classList.contains('active')) {
+                meaningTab.classList.remove('active');
+                originTab.classList.remove('active');
+            } else {
+                meaningTab.classList.add('active');
+            }
+        }
+
+        // 검색 초기화
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('searchInput').focus();
+        }
+
+        // 엔터 키 검색
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+
+        // 초기 로드
+        window.addEventListener('load', function() {
+            document.getElementById('searchInput').focus();
+        });
+    </script>
+</body>
+</html>
